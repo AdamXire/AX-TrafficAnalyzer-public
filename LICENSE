@@ -1,0 +1,163 @@
+AX-TrafficAnalyzer Dual License
+
+Copyright (c) 2025 MMeTech (Macau) Ltd.
+Author: AdamChe 谢毅翔, 字:吉祥
+Classification: Enterprise Security Auditor and Education
+
+========================================
+DUAL LICENSING MODEL
+========================================
+
+This project uses a dual licensing model:
+
+1. COMMUNITY EDITION (MIT License) - For open source core features
+2. ENTERPRISE EDITION (Proprietary License) - For premium enterprise features
+
+========================================
+PART 1: COMMUNITY EDITION (MIT LICENSE)
+========================================
+
+The core AX-TrafficAnalyzer platform is licensed under the MIT License.
+
+MIT License
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+COMMUNITY EDITION INCLUDES:
+- WiFi hotspot creation and management
+- Transparent HTTPS MITM interception
+- Traffic capture and logging
+- Basic protocol analysis (HTTP, TLS, DNS)
+- PCAP export for Wireshark
+- Web dashboard (basic features)
+- REST API (core endpoints)
+- Session and device tracking
+- Basic vulnerability scanning (passive)
+- Plugin system (core framework)
+- IPv6 dual-stack support
+- Certificate management
+- Time synchronization
+- GDPR compliance tools
+
+========================================
+PART 2: ENTERPRISE EDITION (PROPRIETARY)
+========================================
+
+Premium enterprise features are proprietary and require a commercial license.
+
+Proprietary License
+
+Copyright (c) 2025 MMeTech (Macau) Ltd.
+All Rights Reserved.
+
+The following features require a valid Enterprise Edition license:
+
+ENTERPRISE FEATURES:
+- Advanced ML-based anomaly detection
+- Active vulnerability scanning with custom rules
+- HTTP fuzzing engine with advanced mutations
+- Enterprise collaboration features (multi-user, real-time)
+- Multi-tenant support
+- SSO/LDAP integration
+- Advanced threat intelligence integrations
+- Compliance reporting (SOC 2, ISO 27001, GDPR, PCI-DSS)
+- Distributed capture (multiple nodes with consensus)
+- Cloud-native deployment features
+- Hardware acceleration (GPU, FPGA, DPDK)
+- Blockchain audit trail
+- Differential privacy features
+- Real-time collaboration with CRDTs
+- Enterprise SLA (99.9% uptime) and support
+- Priority updates and security patches
+- Custom development and integrations
+- Professional services
+
+ENTERPRISE LICENSE TERMS:
+
+1. The Enterprise Edition is proprietary software owned by MMeTech (Macau) Ltd.
+2. Use of Enterprise features requires a valid commercial license agreement.
+3. Licenses are sold on a per-deployment or subscription basis.
+4. Enterprise features may not be redistributed without authorization.
+5. Source code for Enterprise features is not publicly available.
+6. Contact sales@mmetech.com for licensing information.
+
+========================================
+THIRD-PARTY COMPONENTS (MIT LICENSE)
+========================================
+
+This software integrates the following MIT-licensed components:
+
+- mitmproxy: Copyright (c) [year] mitmproxy contributors
+- FastAPI: Copyright (c) [year] Sebastián Ramírez
+- React: Copyright (c) [year] Facebook, Inc.
+- And other dependencies listed in requirements.txt and NOTICES.md
+
+All third-party copyright notices are preserved.
+
+========================================
+INNOVATION & PROPRIETARY MODIFICATIONS
+========================================
+
+AdamChe Proprietary Innovations (Copyright (c) 2025 MMeTech (Macau) Ltd.):
+
+COMMUNITY EDITION INNOVATIONS (MIT Licensed):
+- Integrated WiFi hotspot with zero-configuration
+- Transparent HTTPS MITM with automatic certificate management
+- Streaming PCAP export with backpressure control
+- Atomic startup orchestration with rollback
+- Network partition resilience
+- IPv6 dual-stack architecture
+- Plugin sandboxing with seccomp
+- GDPR compliance framework
+
+ENTERPRISE EDITION INNOVATIONS (Proprietary):
+- Advanced ML models for zero-day detection
+- Active scanning engine with fuzzing
+- Enterprise collaboration architecture
+- Distributed consensus algorithms
+- Hardware acceleration integration
+- Blockchain audit trail system
+
+========================================
+LICENSE SELECTION GUIDE
+========================================
+
+COMMUNITY EDITION (Free, MIT License):
+- ✅ Use for: Education, research, personal projects, startups
+- ✅ Perfect for: Learning, testing, non-commercial use
+- ✅ Support: Community forums and documentation
+- ✅ Source Code: Available on GitHub
+- ✅ Cost: $0
+
+ENTERPRISE EDITION (Commercial License):
+- ✅ Use for: Production deployments, commercial applications
+- ✅ Perfect for: Enterprises, security firms, managed services
+- ✅ Support: SLA-backed support with priority response
+- ✅ Source Code: Binary distribution only
+- ✅ Cost: From $2,999/year per deployment
+
+Contact: sales@mmetech.com for Enterprise licensing
+
+========================================
+
+Author: AdamChe 谢毅翔, 字:吉祥
+Company: MMeTech (Macau) Ltd.
+Classification: Enterprise Security Auditor and Education
+Website: [To be added]
+Email: sales@mmetech.com

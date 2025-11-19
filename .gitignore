@@ -1,0 +1,18 @@
+
+# Generated Community Edition docs
+build/
+.backups/
+*.backup.*
+
+# Test coverage
+htmlcov/
+.coverage
+.pytest_cache/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.Python
+
