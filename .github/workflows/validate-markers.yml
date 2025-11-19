@@ -1,0 +1,74 @@
+name: Validate Markers
+
+on:
+  push:
+    paths:
+      - 'docs/*.md'
+      - 'DESIGN_*.md'
+      - 'LICENSING_*.md'
+      - 'PROJECT_STATUS.md'
+      - 'README.md'
+      - 'scripts/validate-markers.py'
+      - 'scripts/generate-community-docs.py'
+      - 'scripts/generate_community_docs/**'
+  pull_request:
+    paths:
+      - 'docs/*.md'
+      - 'DESIGN_*.md'
+      - 'LICENSING_*.md'
+      - 'PROJECT_STATUS.md'
+      - 'README.md'
+      - 'scripts/validate-markers.py'
+      - 'scripts/generate-community-docs.py'
+      - 'scripts/generate_community_docs/**'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: Validate Documentation Markers
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Validate marker syntax
+        run: |
+          echo "🔍 Validating marker syntax..."
+          python3 scripts/validate-markers.py --all
+      
+      - name: Generate Community docs (validate-only)
+        run: |
+          echo "📝 Generating Community documentation (validation mode)..."
+          python3 scripts/generate-community-docs.py --all --validate-only
+      
+      - name: Check for Enterprise leaks
+        if: success()
+        run: |
+          echo "🔍 Checking for Enterprise content leaks..."
+          if [ -d "build/community" ]; then
+            python3 scripts/check-enterprise-leaks.py build/community/
+          else
+            echo "⚠️  Warning: build/community/ directory not found"
+            echo "   This may be expected if --validate-only was used"
+          fi
+      
+      - name: Report results
+        if: failure()
+        run: |
+          echo "❌ Validation failed. See errors above."
+          echo ""
+          echo "Common issues:"
+          echo "  - Unmatched marker pairs"
+          echo "  - Invalid marker syntax"
+          echo "  - Enterprise content leaks"
+          echo ""
+          echo "See docs/MARKER_GUIDE.md for marker syntax."
+          echo "See docs/TROUBLESHOOTING.md for solutions."
+          exit 1
+
