@@ -1,7 +1,7 @@
 # AX-TrafficAnalyzer
 
-**Copyright © 2025 MMeTech (Macau) Ltd.**  
-**Author**: AdamChe 谢毅翔, 字:吉祥  
+**Copyright © 2025 MMeTech (Macau) Ltd.**
+**Author**: AdamChe 谢毅翔, 字:吉祥
 **Classification**: Enterprise Security Auditor and Education
 
 **World-Class Mobile Application Traffic Analysis Platform**
@@ -16,15 +16,15 @@ AX-TrafficAnalyzer is a professional-grade, open-source network traffic analysis
 
 ### Key Features
 
-✅ **Zero Configuration** - Mobile devices connect to a normal WiFi hotspot, no proxy settings needed  
-✅ **Transparent HTTPS MITM** - Automatic SSL/TLS interception with dynamic certificate generation  
-✅ **Integrated Workflow** - Single platform combining hotspot, capture, analysis, and visualization  
-✅ **Wireshark Integration** - Native PCAP export for deep protocol analysis  
-✅ **Extensible Architecture** - Plugin system for custom analysis and scanning  
-✅ **Production Ready** - Fail-fast design, comprehensive monitoring, automatic recovery  
-✅ **Advanced Analysis** - Protocol analyzers, vulnerability scanner, HTTP fuzzer  
-✅ **Real-time Dashboard** - Web UI with live traffic monitoring  
-✅ **API-First Design** - RESTful API + WebSocket for automation  
+✅ **Zero Configuration** - Mobile devices connect to a normal WiFi hotspot, no proxy settings needed
+✅ **Transparent HTTPS MITM** - Automatic SSL/TLS interception with dynamic certificate generation
+✅ **Integrated Workflow** - Single platform combining hotspot, capture, analysis, and visualization
+✅ **Wireshark Integration** - Native PCAP export for deep protocol analysis
+✅ **Extensible Architecture** - Plugin system for custom analysis and scanning
+✅ **Production Ready** - Fail-fast design, comprehensive monitoring, automatic recovery
+✅ **Advanced Analysis** - Protocol analyzers, vulnerability scanner, HTTP fuzzer
+✅ **Real-time Dashboard** - Web UI with live traffic monitoring
+✅ **API-First Design** - RESTful API + WebSocket for automation
 
 ## Quick Start
 
@@ -47,8 +47,8 @@ open https://localhost:8443
 
 ```
 Mobile Device → WiFi Hotspot → HTTPS MITM → Analysis → PCAP Export → Wireshark
-                    ↓              ↓           ↓           ↓
-                  hostapd      mitmproxy   Scanners   Web Dashboard
+ ↓ ↓ ↓ ↓
+ hostapd mitmproxy Scanners Web Dashboard
 ```
 
 See [DESIGN_PLAN.md](DESIGN_PLAN.md) for complete architectural details.
@@ -83,7 +83,9 @@ See [DESIGN_PLAN.md](DESIGN_PLAN.md) for complete architectural details.
 
 ## Documentation Generation
 
-This project uses a hybrid repository strategy with explicit markers to separate Community Edition and Enterprise Edition content. The `generate-community-docs.py` script automatically generates Community Edition documentation from marked source files.
+
+This project uses a hybrid repository strategy with explicit markers to separate Community Edition and proprietary content. The `generate-community-docs.py` script automatically generates Community Edition documentation from marked source files.
+
 
 ### Usage
 
@@ -167,9 +169,8 @@ See [docs/SYNC_GUIDE.md](docs/SYNC_GUIDE.md) for complete sync documentation.
 ### Marker System
 
 Documentation files use explicit HTML comment markers to separate content:
-- `<!-- COMMUNITY-START -->` / `<!-- COMMUNITY-END -->` - Community Edition content
-- `<!-- ENTERPRISE-START -->` / `<!-- ENTERPRISE-END -->` - Enterprise Edition content (excluded from public)
-- `<!-- SHARED-START -->` / `<!-- SHARED-END -->` - Content for both editions
+- `` / `` - Community Edition content
+- `` / `` - Content for both editions
 
 See [docs/MARKER_GUIDE.md](docs/MARKER_GUIDE.md) for complete marker syntax and usage.
 
@@ -179,8 +180,8 @@ If generation fails, see [docs/TROUBLESHOOTING.md](docs/TROUBLESHOOTING.md) for 
 
 ## Project Status
 
-**Current Phase**: Design & Planning  
-**Version**: 1.0 (in development)  
+**Current Phase**: Design & Planning
+**Version**: 1.0 (in development)
 **Target Release**: Q2 2026
 
 ### Implementation Progress
@@ -329,10 +330,10 @@ curl -H "Authorization: Bearer <token>" https://localhost:8443/api/v1/pcaps/<id>
 const ws = new WebSocket('wss://localhost:8443/api/v1/ws');
 
 ws.onmessage = (event) => {
-  const data = JSON.parse(event.data);
-  if (data.event === 'http_flow') {
-    console.log('New request:', data.data);
-  }
+ const data = JSON.parse(event.data);
+ if (data.event === 'http_flow') {
+ console.log('New request:', data.data);
+ }
 };
 ```
 
@@ -344,17 +345,17 @@ Create custom plugins to extend AX-TrafficAnalyzer:
 from ax_traffic.plugins import Plugin
 
 class MyPlugin(Plugin):
-    name = "my_plugin"
-    version = "1.0.0"
-    
-    def on_request(self, flow):
-        # Analyze HTTP request
-        if 'password' in flow.request.text:
-            self.alert("Password in cleartext detected!")
-    
-    def on_response(self, flow):
-        # Analyze HTTP response
-        pass
+ name = "my_plugin"
+ version = "1.0.0"
+
+ def on_request(self, flow):
+ # Analyze HTTP request
+ if 'password' in flow.request.text:
+ self.alert("Password in cleartext detected!")
+
+ def on_response(self, flow):
+ # Analyze HTTP response
+ pass
 ```
 
 See [Plugin Development Guide](docs/plugins.md) for details.
@@ -457,30 +458,22 @@ See [docs/CI_CD.md](docs/CI_CD.md) for complete CI/CD documentation.
 
 ## License
 
-**Copyright © 2025 MMeTech (Macau) Ltd.**  
-**Author**: AdamChe 谢毅翔, 字:吉祥  
+**Copyright © 2025 MMeTech (Macau) Ltd.**
+**Author**: AdamChe 谢毅翔, 字:吉祥
 **Classification**: Enterprise Security Auditor and Education
 
 ### Dual Licensing Model
 
 AX-TrafficAnalyzer is available under two licenses:
 
-<!-- COMMUNITY-START -->
+
 #### Community Edition (MIT License)
 - ✅ **Free and open source**
 - ✅ Perfect for education, research, personal projects
 - ✅ Includes core traffic capture and analysis features
 - ✅ See [LICENSE-COMMUNITY](LICENSE-COMMUNITY) for details
-<!-- COMMUNITY-END -->
 
-<!-- ENTERPRISE-START -->
-#### Enterprise Edition (Proprietary)
-- 🔒 **Commercial license required**
-- 🔒 Advanced features (ML, active scanning, fuzzing, compliance)
-- 🔒 SLA-backed support with 99.9% uptime
-- 🔒 Contact: sales@mmetech.com
-- 🔒 See [LICENSE-ENTERPRISE](LICENSE-ENTERPRISE) for details
-<!-- ENTERPRISE-END -->
+
 
 See [LICENSING_GUIDE.md](LICENSING_GUIDE.md) for complete comparison.
 
@@ -490,10 +483,7 @@ This software contains:
 - **MIT-licensed dependencies**: mitmproxy, FastAPI, React (see [NOTICES.md](NOTICES.md))
 - **AdamChe proprietary innovations**: Copyright (c) 2025 MMeTech (Macau) Ltd.
 
-**Community Edition**: MIT License allows free use, modification, and distribution  
-<!-- ENTERPRISE-START -->
-**Enterprise Edition**: Proprietary features require commercial license
-<!-- ENTERPRISE-END -->
+**Community Edition**: MIT License allows free use, modification, and distribution
 
 ## Acknowledgments
 
@@ -508,19 +498,19 @@ If you use AX-TrafficAnalyzer in your research, please cite:
 
 ```bibtex
 @software{ax_traffic_analyzer,
-  title = {AX-TrafficAnalyzer: Mobile Application Traffic Analysis Platform},
-  author = {AdamChe 谢毅翔, 字:吉祥},
-  publisher = {MMeTech (Macau) Ltd.},
-  year = {2025},
-  classification = {Enterprise Security Auditor and Education},
-  url = {https://github.com/yourusername/AX-TrafficAnalyzer}
+ title = {AX-TrafficAnalyzer: Mobile Application Traffic Analysis Platform},
+ author = {AdamChe 谢毅翔, 字:吉祥},
+ publisher = {MMeTech (Macau) Ltd.},
+ year = {2025},
+ classification = {Enterprise Security Auditor and Education},
+ url = {https://github.com/yourusername/AX-TrafficAnalyzer}
 }
 ```
 
 ---
 
-**Copyright © 2025 MMeTech (Macau) Ltd.**  
-**Author**: AdamChe 谢毅翔, 字:吉祥  
+**Copyright © 2025 MMeTech (Macau) Ltd.**
+**Author**: AdamChe 谢毅翔, 字:吉祥
 **Classification**: Enterprise Security Auditor and Education
 
 Made with ❤️ for enterprise security and education
