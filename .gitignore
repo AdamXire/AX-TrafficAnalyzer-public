@@ -1,18 +1,35 @@
-
-# Generated Community Edition docs
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
 build/
-.backups/
-*.backup.*
+venv/
+env/
+ENV/
 
-# Test coverage
-htmlcov/
-.coverage
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Project specific
+*.pcap
+*.pcapng
+config/local.json
+logs/
+*.log
+certificates/private/
+data/*.db
+
+# Temporary
+*.tmp
+*.bak
+.cache/
 .pytest_cache/
 
-# Python cache
-__pycache__/
-*.pyc
-*.pyo
-*.pyd
-.Python
-
+# OS
+.DS_Store
+Thumbs.db
