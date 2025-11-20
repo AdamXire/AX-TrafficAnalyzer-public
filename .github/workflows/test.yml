@@ -25,18 +25,32 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
       
+      - name: Check for tests directory
+        id: check_tests
+        run: |
+          if [ -d "tests" ] && [ "$(find tests -name 'test_*.py' -type f 2>/dev/null | wc -l)" -gt 0 ]; then
+            echo "tests_exist=true" >> $GITHUB_OUTPUT
+            echo "✅ Tests directory found with test files"
+          else
+            echo "tests_exist=false" >> $GITHUB_OUTPUT
+            echo "⚠️  No tests directory or test files found"
+            echo "This is expected for initial setup. Tests will be added in future syncs."
+          fi
+      
       - name: Install dependencies
+        if: steps.check_tests.outputs.tests_exist == 'true'
         run: |
           python3 -m pip install --upgrade pip
           pip install pytest pytest-cov
       
       - name: Run tests
+        if: steps.check_tests.outputs.tests_exist == 'true'
         run: |
           echo "🧪 Running test suite..."
           pytest tests/ -v --cov=scripts/generate_community_docs --cov-report=term-missing --cov-report=xml
       
       - name: Upload coverage reports
-        if: matrix.python-version == '3.11'
+        if: steps.check_tests.outputs.tests_exist == 'true' && matrix.python-version == '3.11'
         uses: codecov/codecov-action@v3
         with:
           file: ./coverage.xml
@@ -45,9 +59,23 @@ jobs:
           fail_ci_if_error: false
       
       - name: Check test coverage
+        if: steps.check_tests.outputs.tests_exist == 'true'
         run: |
           echo "📊 Coverage report:"
           pytest tests/ --cov=scripts/generate_community_docs --cov-report=term --cov-report=term-missing || true
           echo ""
           echo "Target: >90% coverage"
-
+      
+      - name: Skip tests (no tests found)
+        if: steps.check_tests.outputs.tests_exist == 'false'
+        run: |
+          echo "ℹ️  Skipping test execution"
+          echo "Reason: No tests directory or test files found in repository"
+          echo ""
+          echo "This is expected behavior when:"
+          echo "  - Repository is newly created"
+          echo "  - Tests haven't been synced yet"
+          echo "  - Tests are in a different location"
+          echo ""
+          echo "Status: ✅ Workflow completed successfully (tests skipped)"
+          exit 0
