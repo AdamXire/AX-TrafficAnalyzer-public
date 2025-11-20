@@ -25,7 +25,7 @@ on:
 
 jobs:
   validate:
-    name: Validate Documentation Markers
+    name: validate-markers
     runs-on: ubuntu-latest
     
     steps:

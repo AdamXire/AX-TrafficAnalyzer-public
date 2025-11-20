@@ -9,7 +9,7 @@ on:
 
 jobs:
   test:
-    name: Run Test Suite
+    name: test
     runs-on: ubuntu-latest
     
     strategy:
