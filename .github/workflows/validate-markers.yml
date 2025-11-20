@@ -1,0 +1,101 @@
+name: Validate Markers
+
+on:
+  push:
+    paths:
+      - 'docs/*.md'
+      - 'DESIGN_*.md'
+      - 'LICENSING_*.md'
+      - 'PROJECT_STATUS.md'
+      - 'README.md'
+      - 'scripts/validate-markers.py'
+      - 'scripts/generate-community-docs.py'
+      - 'scripts/generate_community_docs/**'
+  pull_request:
+    paths:
+      - 'docs/*.md'
+      - 'DESIGN_*.md'
+      - 'LICENSING_*.md'
+      - 'PROJECT_STATUS.md'
+      - 'README.md'
+      - 'scripts/validate-markers.py'
+      - 'scripts/generate-community-docs.py'
+      - 'scripts/generate_community_docs/**'
+  workflow_dispatch:
+
+jobs:
+  validate:
+    name: validate-markers
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      
+      - name: Check for validation scripts
+        id: check_scripts
+        run: |
+          if [ -f "scripts/validate-markers.py" ] && [ -f "scripts/generate-community-docs.py" ]; then
+            echo "scripts_exist=true" >> $GITHUB_OUTPUT
+            echo "✅ Validation scripts found"
+          else
+            echo "scripts_exist=false" >> $GITHUB_OUTPUT
+            echo "⚠️  Validation scripts not found"
+            echo "This is expected for initial setup. Scripts will be added in future syncs."
+          fi
+      
+      - name: Validate marker syntax
+        if: steps.check_scripts.outputs.scripts_exist == 'true'
+        run: |
+          echo "🔍 Validating marker syntax..."
+          python3 scripts/validate-markers.py --all
+      
+      - name: Generate Community docs (validate-only)
+        if: steps.check_scripts.outputs.scripts_exist == 'true'
+        run: |
+          echo "📝 Generating Community documentation (validation mode)..."
+          python3 scripts/generate-community-docs.py --all --validate-only
+      
+      - name: Check for Enterprise leaks
+        if: steps.check_scripts.outputs.scripts_exist == 'true' && success()
+        run: |
+          echo "🔍 Checking for Enterprise content leaks..."
+          if [ -d "build/community" ]; then
+            python3 scripts/check-enterprise-leaks.py build/community/
+          else
+            echo "⚠️  Warning: build/community/ directory not found"
+            echo "   This may be expected if --validate-only was used"
+          fi
+      
+      - name: Skip validation (scripts not found)
+        if: steps.check_scripts.outputs.scripts_exist == 'false'
+        run: |
+          echo "ℹ️  Skipping validation"
+          echo "Reason: Validation scripts not found in repository"
+          echo ""
+          echo "This is expected behavior when:"
+          echo "  - Repository is newly created"
+          echo "  - Scripts haven't been synced yet"
+          echo "  - Scripts are in a different location"
+          echo ""
+          echo "Status: ✅ Workflow completed successfully (validation skipped)"
+          exit 0
+      
+      - name: Report results
+        if: failure()
+        run: |
+          echo "❌ Validation failed. See errors above."
+          echo ""
+          echo "Common issues:"
+          echo "  - Unmatched marker pairs"
+          echo "  - Invalid marker syntax"
+          echo "  - Enterprise content leaks"
+          echo ""
+          echo "See docs/MARKER_GUIDE.md for marker syntax."
+          echo "See docs/TROUBLESHOOTING.md for solutions."
+          exit 1
