@@ -4,8 +4,6 @@
 # Dependencies for testing and development
 # Install: pip install -r requirements-dev.txt
 
--c requirements.txt
-
 # Testing framework
 pytest>=7.0.0
 pytest-cov>=4.0.0

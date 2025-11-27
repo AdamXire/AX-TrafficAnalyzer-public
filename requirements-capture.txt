@@ -5,8 +5,6 @@
 # Requires system dependencies: gcc, libpcap-dev
 # Install: sudo apt-get install -y gcc libpcap-dev && pip install -r requirements-capture.txt
 
--c requirements.txt
-
 # Phase 2b: Traffic Capture (optional - only if capture.enabled=True)
 python-libpcap>=0.5.0,<1.0.0
 
