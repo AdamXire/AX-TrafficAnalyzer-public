@@ -36,7 +36,6 @@
 ### Licensing & Copyright
 - ✅ **LICENSE** - Dual licensing overview
 - ✅ **LICENSE-COMMUNITY** - MIT License terms
-- ✅ **Dual licensing model** - Community (MIT) + Proprietary
 - ✅ **Licensing phasing strategy** - Phased rollout from MIT to dual licensing
 - ✅ **Copyright compliance** - 100% compliant with copyright guidelines
 - ✅ **Software copyright application** - Fully prepared
@@ -79,7 +78,7 @@
 - ✅ **DESIGN_PLAN.md marked** - 8 marker pairs (7 Enterprise, 1 Community)
 - ✅ **LICENSING_GUIDE.md marked** - 8 marker pairs (6 Enterprise, 2 Community)
 - ✅ **README.md marked** - 3 marker pairs (2 Enterprise, 1 Community)
-- ✅ **Zero Enterprise leaks** - All pricing and proprietary content contained
+- ✅ **Zero Enterprise leaks** - All pricing and commercial content contained
 - ✅ **Audit completed** - Grade 8.5/10, improved to 9.0/10 after fixes
 - ✅ **All fixes applied** - 2 minor issues resolved
 - ✅ **Validation passed** - 19 production marker pairs, 100% matched

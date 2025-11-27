@@ -255,8 +255,6 @@ ax-traffic --version
 
 
 
-**Seamless upgrade**: Just activate your license key, no reinstallation needed.
-
 ---
 
 ## FAQ
@@ -357,17 +355,6 @@ AX-TrafficAnalyzer/
 │ │ ├── ui/ # Basic web UI
 │ │ ├── plugins/ # Plugin framework
 │ │ └── integrations/ # Wireshark integration
-│ └── enterprise/ # Proprietary (closed source)
-│ ├── ml/ # 🔒 ML models
-│ ├── scanner/ # 🔒 Active scanner
-│ ├── fuzzer/ # 🔒 HTTP fuzzer
-│ ├── collaboration/ # 🔒 Multi-user features
-│ ├── multitenant/ # 🔒 Multi-tenant support
-│ ├── sso/ # 🔒 SSO/LDAP
-│ ├── compliance/ # 🔒 Compliance reporting
-│ ├── distributed/ # 🔒 Distributed capture
-│ ├── hardware/ # 🔒 Hardware acceleration
-│ └── blockchain/ # 🔒 Blockchain audit trail
 ```
 
 ### File Header Examples
