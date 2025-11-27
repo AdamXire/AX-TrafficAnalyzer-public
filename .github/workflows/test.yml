@@ -14,8 +14,6 @@ jobs:
     
     strategy:
       matrix:
-        # Note: Python 3.11+ has aioredis incompatibility (deprecated package)
-        # TODO: Replace aioredis with redis.asyncio to support 3.11+
         python-version: ['3.10']
     
     steps:
@@ -45,14 +43,6 @@ jobs:
           python3 -m pip install --upgrade pip
           pip install pytest pytest-cov
       
-      - name: Install system dependencies
-        if: steps.check_tests.outputs.tests_exist == 'true'
-        run: |
-          echo "[DEBUG] Installing system dependencies..."
-          sudo apt-get update
-          sudo apt-get install -y libmagic1 libmagic-dev gcc libpcap-dev
-          echo "[DEBUG] System dependencies installed"
-      
       - name: Install project dependencies
         if: steps.check_tests.outputs.tests_exist == 'true'
         run: |
@@ -65,9 +55,11 @@ jobs:
             echo "[DEBUG] Installing dev requirements..."
             pip install -r requirements-dev.txt
           fi
-          # Install capture deps (optional)
+          # Install capture deps with system requirements (optional)
           if [ -f "requirements-capture.txt" ]; then
-            echo "[DEBUG] Installing capture requirements..."
+            echo "[DEBUG] Installing capture requirements (with system deps)..."
+            sudo apt-get update
+            sudo apt-get install -y gcc libpcap-dev
             pip install -r requirements-capture.txt
           fi
           echo "[DEBUG] Dependencies installed successfully"
@@ -86,7 +78,7 @@ jobs:
           fi
       
       - name: Upload coverage reports
-        if: steps.check_tests.outputs.tests_exist == 'true' && matrix.python-version == '3.11'
+        if: steps.check_tests.outputs.tests_exist == 'true' && matrix.python-version == '3.10'
         uses: codecov/codecov-action@v3
         with:
           file: ./coverage.xml
