@@ -43,11 +43,25 @@ jobs:
           python3 -m pip install --upgrade pip
           pip install pytest pytest-cov
       
+      - name: Install project dependencies
+        if: steps.check_tests.outputs.tests_exist == 'true'
+        run: |
+          if [ -f "requirements.txt" ]; then
+            pip install -r requirements.txt
+          fi
+      
       - name: Run tests
         if: steps.check_tests.outputs.tests_exist == 'true'
         run: |
           echo "🧪 Running test suite..."
-          pytest tests/ -v --cov=scripts/generate_community_docs --cov-report=term-missing --cov-report=xml
+          # Determine coverage target based on what exists
+          if [ -d "src/community" ]; then
+            pytest tests/ -v --cov=src/community --cov-report=term-missing --cov-report=xml || pytest tests/ -v
+          elif [ -d "scripts/generate_community_docs" ]; then
+            pytest tests/ -v --cov=scripts/generate_community_docs --cov-report=term-missing --cov-report=xml || pytest tests/ -v
+          else
+            pytest tests/ -v
+          fi
       
       - name: Upload coverage reports
         if: steps.check_tests.outputs.tests_exist == 'true' && matrix.python-version == '3.11'
@@ -62,7 +76,11 @@ jobs:
         if: steps.check_tests.outputs.tests_exist == 'true'
         run: |
           echo "📊 Coverage report:"
-          pytest tests/ --cov=scripts/generate_community_docs --cov-report=term --cov-report=term-missing || true
+          if [ -d "src/community" ]; then
+            pytest tests/ --cov=src/community --cov-report=term --cov-report=term-missing || true
+          elif [ -d "scripts/generate_community_docs" ]; then
+            pytest tests/ --cov=scripts/generate_community_docs --cov-report=term --cov-report=term-missing || true
+          fi
           echo ""
           echo "Target: >90% coverage"
       
