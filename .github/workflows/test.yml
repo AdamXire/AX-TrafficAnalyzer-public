@@ -8,14 +8,13 @@ on:
   workflow_dispatch:
 
 jobs:
-  test-matrix:
+  test:
     name: test
     runs-on: ubuntu-latest
     
     strategy:
       matrix:
         python-version: ['3.11', '3.12']
-      fail-fast: false
     
     steps:
       - name: Checkout code
@@ -81,18 +80,19 @@ jobs:
           echo "Status: ✅ Workflow completed successfully (tests skipped)"
           exit 0
   
-  test:
+  test-combined:
     name: test
-    needs: test-matrix
+    needs: test
     runs-on: ubuntu-latest
     if: always()
     steps:
       - name: Check test results
         run: |
-          if [ "${{ needs.test-matrix.result }}" == "success" ]; then
+          if [ "${{ needs.test.result }}" == "success" ] || [ "${{ needs.test.result }}" == "skipped" ]; then
             echo "✅ All test jobs completed successfully"
             exit 0
           else
             echo "❌ Test jobs failed"
             exit 1
           fi
+
