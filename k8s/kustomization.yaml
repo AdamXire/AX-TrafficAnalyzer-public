@@ -1,0 +1,30 @@
+# AX-TrafficAnalyzer Kustomization
+# Copyright © 2025 MMeTech (Macau) Ltd.
+#
+# Usage:
+#   kubectl apply -k k8s/
+#   kubectl delete -k k8s/
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: ax-traffic
+
+resources:
+  - namespace.yaml
+  - rbac.yaml
+  - configmap.yaml
+  - pvc.yaml
+  - deployment.yaml
+  - service.yaml
+
+commonLabels:
+  app.kubernetes.io/name: ax-traffic-analyzer
+  app.kubernetes.io/version: "1.0.0"
+  app.kubernetes.io/managed-by: kustomize
+
+# Optional: Add image customization
+# images:
+#   - name: ax-traffic-analyzer
+#     newName: your-registry/ax-traffic-analyzer
+#     newTag: v1.0.0
+

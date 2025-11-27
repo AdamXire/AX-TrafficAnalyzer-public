@@ -1,0 +1,67 @@
+# AX-TrafficAnalyzer Common Role
+# Copyright © 2025 MMeTech (Macau) Ltd.
+---
+- name: "[COMMON] Update apt cache"
+  apt:
+    update_cache: yes
+    cache_valid_time: 3600
+  tags: [packages]
+
+- name: "[COMMON] Install system packages"
+  apt:
+    name: "{{ system_packages }}"
+    state: present
+  register: pkg_install
+  tags: [packages]
+
+- name: "[FAIL-FAST] Verify required packages installed"
+  command: "which {{ item }}"
+  loop:
+    - hostapd
+    - dnsmasq
+    - tcpdump
+    - tshark
+  register: pkg_check
+  failed_when: pkg_check.rc != 0
+  changed_when: false
+  tags: [validate]
+
+- name: "[COMMON] Create application user"
+  user:
+    name: "{{ ax_traffic_user }}"
+    group: "{{ ax_traffic_group }}"
+    system: yes
+    shell: /bin/false
+    home: "{{ ax_traffic_dir }}"
+    create_home: no
+  tags: [user]
+
+- name: "[COMMON] Create application directories"
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ ax_traffic_user }}"
+    group: "{{ ax_traffic_group }}"
+    mode: "0755"
+  loop:
+    - "{{ ax_traffic_dir }}"
+    - "{{ ax_traffic_data_dir }}"
+    - "{{ ax_traffic_log_dir }}"
+    - "{{ ax_traffic_data_dir }}/captures"
+    - "{{ ax_traffic_data_dir }}/certs"
+  tags: [directories]
+
+- name: "[COMMON] Configure sysctl for IP forwarding"
+  sysctl:
+    name: net.ipv4.ip_forward
+    value: "1"
+    sysctl_set: yes
+    state: present
+    reload: yes
+  when: hotspot_enabled
+  tags: [network]
+
+- name: "[COMMON] Log setup complete"
+  debug:
+    msg: "[COMMON] ✅ System setup complete"
+

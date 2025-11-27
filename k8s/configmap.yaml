@@ -1,0 +1,54 @@
+# AX-TrafficAnalyzer Kubernetes ConfigMap
+# Copyright © 2025 MMeTech (Macau) Ltd.
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: ax-traffic-config
+  namespace: ax-traffic
+  labels:
+    app.kubernetes.io/name: ax-traffic-analyzer
+    app.kubernetes.io/component: config
+data:
+  config.json: |
+    {
+      "mode": "production",
+      "logging": {
+        "level": "INFO",
+        "format": "json"
+      },
+      "api": {
+        "host": "0.0.0.0",
+        "port": 8443,
+        "workers": 4
+      },
+      "database": {
+        "enabled": true,
+        "path": "/app/data/ax-traffic.db",
+        "pool_size": 5,
+        "max_overflow": 10
+      },
+      "hotspot": {
+        "enabled": true,
+        "interface": "wlan0",
+        "ssid": "AX-Traffic-Analyzer",
+        "channel": 6
+      },
+      "capture": {
+        "enabled": true,
+        "pcap_dir": "/app/captures",
+        "max_size_mb": 100,
+        "rotation_interval": 3600
+      },
+      "analysis": {
+        "enabled": true,
+        "http_analyzer": true,
+        "tls_analyzer": true,
+        "dns_analyzer": true,
+        "passive_scanner": true
+      },
+      "dev_mode_settings": {
+        "skip_system_tools": false,
+        "skip_python_packages": false
+      }
+    }
+

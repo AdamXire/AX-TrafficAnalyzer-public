@@ -1,0 +1,56 @@
+# AX-TrafficAnalyzer Monitoring Role
+# Copyright © 2025 MMeTech (Macau) Ltd.
+---
+- name: "[MONITORING] Install Docker (for Prometheus/Grafana)"
+  apt:
+    name:
+      - docker.io
+      - docker-compose
+    state: present
+  tags: [docker]
+
+- name: "[MONITORING] Start Docker service"
+  systemd:
+    name: docker
+    enabled: yes
+    state: started
+  tags: [docker]
+
+- name: "[MONITORING] Create monitoring directory"
+  file:
+    path: /opt/ax-traffic-monitoring
+    state: directory
+    mode: "0755"
+  tags: [monitoring]
+
+- name: "[MONITORING] Copy Prometheus config"
+  copy:
+    src: "{{ ax_traffic_dir }}/docker/prometheus.yml"
+    dest: /opt/ax-traffic-monitoring/prometheus.yml
+    remote_src: yes
+    mode: "0644"
+  tags: [prometheus]
+
+- name: "[MONITORING] Start monitoring stack"
+  shell: |
+    cd {{ ax_traffic_dir }}/docker
+    docker-compose -f docker-compose.prod.yml up -d prometheus grafana
+  args:
+    executable: /bin/bash
+  register: monitoring_start
+  changed_when: "'Creating' in monitoring_start.stdout or 'Starting' in monitoring_start.stdout"
+  tags: [monitoring]
+
+- name: "[MONITORING] Wait for Grafana"
+  wait_for:
+    port: 3000
+    timeout: 60
+  tags: [verify]
+
+- name: "[MONITORING] Log monitoring complete"
+  debug:
+    msg: |
+      [MONITORING] ✅ Monitoring stack deployed
+      Prometheus: http://{{ ansible_host }}:9090
+      Grafana: http://{{ ansible_host }}:3000
+

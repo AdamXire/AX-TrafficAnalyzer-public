@@ -1,0 +1,48 @@
+# AX-TrafficAnalyzer Ansible Global Variables
+# Copyright © 2025 MMeTech (Macau) Ltd.
+---
+# Application settings
+ax_traffic_version: "1.0.0"
+ax_traffic_user: "ax-traffic"
+ax_traffic_group: "ax-traffic"
+ax_traffic_dir: "/opt/ax-traffic"
+ax_traffic_venv: "/opt/ax-traffic/venv"
+ax_traffic_data_dir: "/var/lib/ax-traffic"
+ax_traffic_log_dir: "/var/log/ax-traffic"
+
+# Python settings
+python_version: "3.11"
+
+# Network settings
+wifi_interface: "wlan0"
+hotspot_ssid: "AX-Traffic-Analyzer"
+hotspot_channel: 6
+api_port: 8443
+
+# Feature flags
+hotspot_enabled: true
+monitoring_enabled: false
+analysis_enabled: true
+
+# Repository settings
+ax_traffic_repo: "https://github.com/AdamXire/AX-TrafficAnalyzer.git"
+ax_traffic_branch: "main"
+
+# System packages (FAIL-FAST: all required)
+system_packages:
+  - hostapd
+  - dnsmasq
+  - iptables
+  - tcpdump
+  - tshark
+  - python{{ python_version }}
+  - python{{ python_version }}-venv
+  - python3-pip
+  - git
+  - curl
+
+# Systemd service settings
+ax_traffic_service_name: "ax-traffic"
+ax_traffic_service_restart: "always"
+ax_traffic_service_restart_sec: 5
+
