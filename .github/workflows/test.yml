@@ -43,6 +43,14 @@ jobs:
           python3 -m pip install --upgrade pip
           pip install pytest pytest-cov
       
+      - name: Install system dependencies
+        if: steps.check_tests.outputs.tests_exist == 'true'
+        run: |
+          echo "[DEBUG] Installing system dependencies..."
+          sudo apt-get update
+          sudo apt-get install -y libmagic1 libmagic-dev gcc libpcap-dev
+          echo "[DEBUG] System dependencies installed"
+      
       - name: Install project dependencies
         if: steps.check_tests.outputs.tests_exist == 'true'
         run: |
@@ -55,11 +63,9 @@ jobs:
             echo "[DEBUG] Installing dev requirements..."
             pip install -r requirements-dev.txt
           fi
-          # Install capture deps with system requirements (optional)
+          # Install capture deps (optional)
           if [ -f "requirements-capture.txt" ]; then
-            echo "[DEBUG] Installing capture requirements (with system deps)..."
-            sudo apt-get update
-            sudo apt-get install -y gcc libpcap-dev
+            echo "[DEBUG] Installing capture requirements..."
             pip install -r requirements-capture.txt
           fi
           echo "[DEBUG] Dependencies installed successfully"
