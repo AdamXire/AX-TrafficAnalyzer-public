@@ -1,0 +1,56 @@
+{
+  "name": "ax-traffic-analyzer",
+  "version": "1.0.0",
+  "description": "AX-TrafficAnalyzer Desktop Application",
+  "main": "electron/main.js",
+  "author": "AdamChe - MMeTech (Macau) Ltd.",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "build": "tsc && electron-builder",
+    "package": "electron-builder --dir",
+    "dist": "electron-builder",
+    "bundle-backend": "python scripts/bundle-backend.py"
+  },
+  "dependencies": {
+    "electron-log": "^5.0.0",
+    "electron-updater": "^6.1.0"
+  },
+  "devDependencies": {
+    "electron": "^28.0.0",
+    "electron-builder": "^24.9.0",
+    "typescript": "^5.3.0"
+  },
+  "build": {
+    "appId": "com.mmetech.ax-traffic-analyzer",
+    "productName": "AX-TrafficAnalyzer",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "resources/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "../src/community/ui/dist",
+        "to": "ui"
+      },
+      {
+        "from": "backend-bundle",
+        "to": "backend"
+      }
+    ],
+    "linux": {
+      "target": ["AppImage", "deb"],
+      "category": "Network"
+    },
+    "win": {
+      "target": ["nsis", "portable"]
+    },
+    "mac": {
+      "target": ["dmg", "zip"]
+    }
+  }
+}
+
