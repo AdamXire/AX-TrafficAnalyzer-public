@@ -1,0 +1,77 @@
+# AX-TrafficAnalyzer Docker Ignore
+# Exclude files not needed in container
+
+# Git
+.git
+.gitignore
+.gitattributes
+
+# Python
+__pycache__
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+.venv/
+ENV/
+env/
+.eggs/
+*.egg-info/
+*.egg
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+*~
+
+# Testing
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.nox/
+
+# Build artifacts
+build/
+dist/
+*.whl
+
+# Documentation
+docs/
+*.md
+!README.md
+
+# Development files
+.env
+.env.local
+*.log
+Makefile
+
+# Desktop and Mobile apps (not needed in backend container)
+desktop/
+mobile/
+node_modules/
+
+# Data and captures (mounted as volumes)
+data/
+captures/
+logs/
+certs/
+
+# Test fixtures
+tests/fixtures/
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+
+# Docker files (don't copy into image)
+docker/
+Dockerfile
+docker-compose*.yml
+

@@ -1,0 +1,115 @@
+{
+  "hotspot": {
+    "interface": "wlan0",
+    "ssid": "AX-Traffic-Analyzer",
+    "password": "SecurePassword123!",
+    "channel": "auto",
+    "ip_range": "192.168.4.0/24",
+    "gateway": "192.168.4.1",
+    "dhcp_range": {
+      "start": "192.168.4.10",
+      "end": "192.168.4.250"
+    },
+    "dns": {
+      "primary": "8.8.8.8",
+      "secondary": "8.8.4.4"
+    },
+    "max_clients": 50,
+    "hide_ssid": false,
+    "encryption": "WPA2-PSK"
+  },
+  "capture": {
+    "enabled": true,
+    "mitmproxy": {
+      "port": 8080,
+      "mode": "transparent"
+    },
+    "tcpdump": {
+      "enabled": true,
+      "filter": "udp or dns"
+    },
+    "pcap": {
+      "buffer_size_mb": 10,
+      "output_dir": "./captures/pcap"
+    },
+    "session": {
+      "timeout_seconds": 3600
+    }
+  },
+  "storage": {
+    "pcap_dir": "captures/"
+  },
+  "api": {
+    "host": "0.0.0.0",
+    "port": 8443,
+    "use_ssl": false,
+    "ssl_keyfile": "./certs/server.key",
+    "ssl_certfile": "./certs/server.crt"
+  },
+  "database": {
+    "enabled": true,
+    "path": "./data/ax-traffic.db",
+    "pool_size": 5,
+    "max_overflow": 10
+  },
+  "auth": {
+    "admin_username": "admin",
+    "admin_password": "ChangeMe123!",
+    "token_expiry_hours": 24,
+    "jwt_algorithm": "HS256"
+  },
+  "rate_limiting": {
+    "enabled": true,
+    "redis_url": "redis://localhost:6379",
+    "login_max_attempts": 5,
+    "login_window_seconds": 300
+  },
+  "ui": {
+    "enabled": true,
+    "dev_server_port": 5173,
+    "build_on_startup": false,
+    "theme": "dark",
+    "auto_reload": true
+  },
+  "analysis": {
+    "enabled": true,
+    "http_analyzer": true,
+    "tls_analyzer": true,
+    "dns_analyzer": true,
+    "passive_scanner": true,
+    "max_analysis_time_ms": 100,
+    "max_concurrent_analyses": 10,
+    "pcap_poll_interval": 30,
+    "cache": {
+      "enabled": true,
+      "max_size": 1000,
+      "ttl_seconds": 3600
+    },
+    "threat_intel": {
+      "enabled": false,
+      "virustotal_api_key": ""
+    },
+    "ml_classifier": {
+      "enabled": false,
+      "train_on_startup": false
+    },
+    "reports": {
+      "auto_generate": false
+    }
+  },
+  "mode": "dev",
+  "skip_system_tools": true,
+  "plugins": {
+    "enabled": false,
+    "directory": "./plugins",
+    "sandbox": {
+      "enabled": true,
+      "cpu_percent_limit": 10,
+      "memory_mb_limit": 256,
+      "disk_io_mb_limit": 10,
+      "require_signature": true
+    },
+    "auto_reload": false
+  }
+}
+

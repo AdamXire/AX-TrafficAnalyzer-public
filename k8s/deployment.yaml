@@ -1,0 +1,147 @@
+# AX-TrafficAnalyzer Kubernetes Deployment
+# Copyright © 2025 MMeTech (Macau) Ltd.
+#
+# CRITICAL: Requires privileged mode and hostNetwork for hotspot functionality
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ax-traffic-analyzer
+  namespace: ax-traffic
+  labels:
+    app.kubernetes.io/name: ax-traffic-analyzer
+    app.kubernetes.io/component: backend
+spec:
+  replicas: 1  # Only 1 replica - hotspot uses host network
+  selector:
+    matchLabels:
+      app: ax-traffic-analyzer
+  template:
+    metadata:
+      labels:
+        app: ax-traffic-analyzer
+        app.kubernetes.io/name: ax-traffic-analyzer
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "8443"
+        prometheus.io/path: "/api/v1/metrics"
+    spec:
+      # REQUIRED: Use host network for WiFi hotspot
+      hostNetwork: true
+      dnsPolicy: ClusterFirstWithHostNet
+      
+      # Service account for RBAC
+      serviceAccountName: ax-traffic-sa
+      
+      # Node selector (optional - target specific nodes with WiFi)
+      # nodeSelector:
+      #   ax-traffic/wifi-enabled: "true"
+      
+      containers:
+        - name: ax-traffic
+          image: ax-traffic-analyzer:latest
+          imagePullPolicy: IfNotPresent
+          
+          # REQUIRED: Privileged mode for iptables and network operations
+          securityContext:
+            privileged: true
+            capabilities:
+              add:
+                - NET_ADMIN
+                - NET_RAW
+                - SYS_ADMIN
+          
+          # Environment variables
+          env:
+            - name: AX_ENV
+              value: "production"
+            - name: LOG_LEVEL
+              value: "INFO"
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+          
+          # Ports
+          ports:
+            - name: https
+              containerPort: 8443
+              protocol: TCP
+            - name: metrics
+              containerPort: 9090
+              protocol: TCP
+          
+          # Volume mounts
+          volumeMounts:
+            - name: config
+              mountPath: /app/config
+              readOnly: true
+            - name: data
+              mountPath: /app/data
+            - name: captures
+              mountPath: /app/captures
+            - name: certs
+              mountPath: /app/certs
+            - name: logs
+              mountPath: /app/logs
+          
+          # Resource limits
+          resources:
+            requests:
+              memory: "512Mi"
+              cpu: "500m"
+            limits:
+              memory: "2Gi"
+              cpu: "2000m"
+          
+          # Health checks
+          livenessProbe:
+            httpGet:
+              path: /api/v1/health
+              port: 8443
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            timeoutSeconds: 10
+            failureThreshold: 3
+          
+          readinessProbe:
+            httpGet:
+              path: /api/v1/health/ready
+              port: 8443
+            initialDelaySeconds: 30
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 3
+          
+          startupProbe:
+            httpGet:
+              path: /api/v1/health
+              port: 8443
+            initialDelaySeconds: 10
+            periodSeconds: 10
+            timeoutSeconds: 5
+            failureThreshold: 30  # Allow 5 minutes for startup
+      
+      # Volumes
+      volumes:
+        - name: config
+          configMap:
+            name: ax-traffic-config
+        - name: data
+          persistentVolumeClaim:
+            claimName: ax-traffic-data
+        - name: captures
+          persistentVolumeClaim:
+            claimName: ax-traffic-captures
+        - name: certs
+          persistentVolumeClaim:
+            claimName: ax-traffic-certs
+        - name: logs
+          emptyDir: {}
+      
+      # Termination grace period
+      terminationGracePeriodSeconds: 60
+

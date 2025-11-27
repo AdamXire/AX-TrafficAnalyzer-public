@@ -1,0 +1,71 @@
+# AX-TrafficAnalyzer Ansible Playbook
+# Copyright © 2025 MMeTech (Macau) Ltd.
+#
+# Usage:
+#   ansible-playbook -i inventory/production playbook.yml
+#   ansible-playbook -i inventory/staging playbook.yml --check  # Dry run
+---
+- name: Deploy AX-TrafficAnalyzer
+  hosts: traffic_analyzers
+  become: yes
+  gather_facts: yes
+
+  vars:
+    ax_traffic_version: "1.0.0"
+    ax_traffic_user: "ax-traffic"
+    ax_traffic_dir: "/opt/ax-traffic"
+    ax_traffic_venv: "/opt/ax-traffic/venv"
+    python_version: "3.11"
+
+  pre_tasks:
+    - name: "[FAIL-FAST] Validate Python version"
+      command: python{{ python_version }} --version
+      register: py_version
+      failed_when: py_version.rc != 0
+      changed_when: false
+      tags: [validate]
+
+    - name: "[FAIL-FAST] Validate WiFi interface exists"
+      command: ip link show {{ wifi_interface | default('wlan0') }}
+      register: wifi_check
+      failed_when: wifi_check.rc != 0
+      changed_when: false
+      when: hotspot_enabled | default(true)
+      tags: [validate]
+
+    - name: "Display deployment info"
+      debug:
+        msg: |
+          Deploying AX-TrafficAnalyzer v{{ ax_traffic_version }}
+          Target: {{ inventory_hostname }}
+          Python: {{ py_version.stdout }}
+      tags: [always]
+
+  roles:
+    - role: common
+      tags: [common]
+    - role: ax-traffic
+      tags: [ax-traffic]
+    - role: monitoring
+      tags: [monitoring]
+      when: monitoring_enabled | default(false)
+
+  post_tasks:
+    - name: "Verify deployment"
+      uri:
+        url: "http://localhost:8443/api/v1/health"
+        return_content: yes
+      register: health_check
+      retries: 5
+      delay: 10
+      until: health_check.status == 200
+      tags: [verify]
+
+    - name: "Display deployment status"
+      debug:
+        msg: |
+          ✅ Deployment successful!
+          Health: {{ health_check.json.status }}
+          Access: http://{{ ansible_host }}:8443
+      tags: [always]
+

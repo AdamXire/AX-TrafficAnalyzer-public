@@ -1,0 +1,115 @@
+# AX-TrafficAnalyzer Docker Compose - Production
+# Copyright © 2025 MMeTech (Macau) Ltd.
+#
+# Usage:
+#   docker-compose -f docker-compose.prod.yml up -d
+#
+# Includes: Prometheus + Grafana monitoring stack
+
+version: '3.8'
+
+services:
+  ax-traffic:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: ax-traffic-analyzer
+    hostname: ax-traffic
+    
+    # REQUIRED: Host network for WiFi hotspot
+    network_mode: host
+    privileged: true
+    
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_ADMIN
+    
+    environment:
+      - AX_ENV=production
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=INFO
+    
+    volumes:
+      - ../config:/app/config:ro
+      - ax-data:/app/data
+      - ax-logs:/app/logs
+      - ax-captures:/app/captures
+      - ax-certs:/app/certs
+    
+    restart: always
+    
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8443/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "200m"
+        max-file: "10"
+
+  # Prometheus for metrics collection
+  prometheus:
+    image: prom/prometheus:v2.47.0
+    container_name: ax-prometheus
+    
+    volumes:
+      - ./prometheus.yml:/etc/prometheus/prometheus.yml:ro
+      - prometheus-data:/prometheus
+    
+    command:
+      - '--config.file=/etc/prometheus/prometheus.yml'
+      - '--storage.tsdb.path=/prometheus'
+      - '--storage.tsdb.retention.time=30d'
+      - '--web.enable-lifecycle'
+    
+    ports:
+      - "9090:9090"
+    
+    restart: unless-stopped
+    
+    depends_on:
+      - ax-traffic
+
+  # Grafana for visualization
+  grafana:
+    image: grafana/grafana:10.1.0
+    container_name: ax-grafana
+    
+    environment:
+      - GF_SECURITY_ADMIN_USER=admin
+      - GF_SECURITY_ADMIN_PASSWORD=${GRAFANA_PASSWORD:-admin}
+      - GF_USERS_ALLOW_SIGN_UP=false
+      - GF_SERVER_ROOT_URL=http://localhost:3000
+    
+    volumes:
+      - grafana-data:/var/lib/grafana
+      - ./grafana/provisioning:/etc/grafana/provisioning:ro
+    
+    ports:
+      - "3000:3000"
+    
+    restart: unless-stopped
+    
+    depends_on:
+      - prometheus
+
+# Named volumes
+volumes:
+  ax-data:
+    name: ax-traffic-data-prod
+  ax-logs:
+    name: ax-traffic-logs-prod
+  ax-captures:
+    name: ax-traffic-captures-prod
+  ax-certs:
+    name: ax-traffic-certs-prod
+  prometheus-data:
+    name: ax-prometheus-data
+  grafana-data:
+    name: ax-grafana-data
+

@@ -1,0 +1,54 @@
+# AX-TrafficAnalyzer Kubernetes PersistentVolumeClaims
+# Copyright © 2025 MMeTech (Macau) Ltd.
+---
+# Data volume (database)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ax-traffic-data
+  namespace: ax-traffic
+  labels:
+    app.kubernetes.io/name: ax-traffic-analyzer
+    app.kubernetes.io/component: storage
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 10Gi
+  # storageClassName: standard  # Uncomment and set for your cluster
+---
+# Captures volume (PCAP files)
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ax-traffic-captures
+  namespace: ax-traffic
+  labels:
+    app.kubernetes.io/name: ax-traffic-analyzer
+    app.kubernetes.io/component: storage
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 100Gi  # PCAP files can be large
+  # storageClassName: standard
+---
+# Certificates volume
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: ax-traffic-certs
+  namespace: ax-traffic
+  labels:
+    app.kubernetes.io/name: ax-traffic-analyzer
+    app.kubernetes.io/component: storage
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+  # storageClassName: standard
+

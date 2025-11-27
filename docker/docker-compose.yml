@@ -1,0 +1,80 @@
+# AX-TrafficAnalyzer Docker Compose - Development
+# Copyright © 2025 MMeTech (Macau) Ltd.
+#
+# Usage:
+#   docker-compose up -d
+#   docker-compose logs -f
+#   docker-compose down
+#
+# IMPORTANT: Requires host network mode and privileged access for hotspot
+
+version: '3.8'
+
+services:
+  ax-traffic:
+    build:
+      context: ..
+      dockerfile: docker/Dockerfile
+    container_name: ax-traffic-analyzer
+    hostname: ax-traffic
+    
+    # REQUIRED: Host network for WiFi hotspot
+    network_mode: host
+    
+    # REQUIRED: Privileged mode for iptables and network operations
+    privileged: true
+    
+    # Additional capabilities (if not using privileged)
+    cap_add:
+      - NET_ADMIN
+      - NET_RAW
+      - SYS_ADMIN
+    
+    # Environment variables
+    environment:
+      - AX_ENV=development
+      - PYTHONUNBUFFERED=1
+      - LOG_LEVEL=DEBUG
+    
+    # Volume mounts
+    volumes:
+      # Configuration (read-only in production)
+      - ../config:/app/config:ro
+      # Data persistence
+      - ax-data:/app/data
+      # Logs
+      - ax-logs:/app/logs
+      # PCAP captures
+      - ax-captures:/app/captures
+      # Certificates
+      - ax-certs:/app/certs
+    
+    # Restart policy
+    restart: unless-stopped
+    
+    # Health check
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8443/api/v1/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+    
+    # Logging configuration
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "100m"
+        max-file: "5"
+
+# Named volumes for data persistence
+volumes:
+  ax-data:
+    name: ax-traffic-data
+  ax-logs:
+    name: ax-traffic-logs
+  ax-captures:
+    name: ax-traffic-captures
+  ax-certs:
+    name: ax-traffic-certs
+

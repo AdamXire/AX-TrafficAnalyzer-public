@@ -546,5 +546,3 @@ If you use AX-TrafficAnalyzer in your research, please cite:
 
 Made with ❤️ for enterprise security and education
 
-
-<!-- CI/CD: Dummy change to trigger validate-markers workflow -->

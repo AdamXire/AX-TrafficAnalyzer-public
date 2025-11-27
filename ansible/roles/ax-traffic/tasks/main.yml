@@ -1,0 +1,78 @@
+# AX-TrafficAnalyzer Application Role
+# Copyright © 2025 MMeTech (Macau) Ltd.
+---
+- name: "[AX-TRAFFIC] Clone repository"
+  git:
+    repo: "{{ ax_traffic_repo }}"
+    dest: "{{ ax_traffic_dir }}"
+    version: "{{ ax_traffic_branch }}"
+    force: yes
+  register: git_clone
+  tags: [deploy]
+
+- name: "[AX-TRAFFIC] Create virtual environment"
+  command: "python{{ python_version }} -m venv {{ ax_traffic_venv }}"
+  args:
+    creates: "{{ ax_traffic_venv }}/bin/python"
+  tags: [venv]
+
+- name: "[AX-TRAFFIC] Upgrade pip"
+  pip:
+    name: pip
+    state: latest
+    virtualenv: "{{ ax_traffic_venv }}"
+  tags: [venv]
+
+- name: "[AX-TRAFFIC] Install Python dependencies"
+  pip:
+    requirements: "{{ ax_traffic_dir }}/requirements.txt"
+    virtualenv: "{{ ax_traffic_venv }}"
+  register: pip_install
+  tags: [dependencies]
+
+- name: "[AX-TRAFFIC] Run database migrations"
+  command: "{{ ax_traffic_venv }}/bin/alembic upgrade head"
+  args:
+    chdir: "{{ ax_traffic_dir }}"
+  register: migration_result
+  changed_when: "'Running upgrade' in migration_result.stdout"
+  tags: [database]
+
+- name: "[AX-TRAFFIC] Copy configuration"
+  template:
+    src: config.json.j2
+    dest: "{{ ax_traffic_dir }}/config/config.json"
+    owner: "{{ ax_traffic_user }}"
+    group: "{{ ax_traffic_group }}"
+    mode: "0640"
+  notify: restart ax-traffic
+  tags: [config]
+
+- name: "[AX-TRAFFIC] Create systemd service"
+  template:
+    src: ax-traffic.service.j2
+    dest: /etc/systemd/system/ax-traffic.service
+    mode: "0644"
+  notify:
+    - reload systemd
+    - restart ax-traffic
+  tags: [service]
+
+- name: "[AX-TRAFFIC] Enable and start service"
+  systemd:
+    name: ax-traffic
+    enabled: yes
+    state: started
+    daemon_reload: yes
+  tags: [service]
+
+- name: "[AX-TRAFFIC] Wait for service to start"
+  wait_for:
+    port: "{{ api_port }}"
+    timeout: 60
+  tags: [verify]
+
+- name: "[AX-TRAFFIC] Log deployment complete"
+  debug:
+    msg: "[AX-TRAFFIC] ✅ Application deployed"
+

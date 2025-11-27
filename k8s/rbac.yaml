@@ -1,0 +1,50 @@
+# AX-TrafficAnalyzer Kubernetes RBAC
+# Copyright © 2025 MMeTech (Macau) Ltd.
+---
+# Service Account
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: ax-traffic-sa
+  namespace: ax-traffic
+  labels:
+    app.kubernetes.io/name: ax-traffic-analyzer
+    app.kubernetes.io/component: rbac
+---
+# Role with minimum required permissions
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  name: ax-traffic-role
+  namespace: ax-traffic
+  labels:
+    app.kubernetes.io/name: ax-traffic-analyzer
+    app.kubernetes.io/component: rbac
+rules:
+  # Read configmaps and secrets
+  - apiGroups: [""]
+    resources: ["configmaps", "secrets"]
+    verbs: ["get", "list", "watch"]
+  # Read pods (for self-discovery)
+  - apiGroups: [""]
+    resources: ["pods"]
+    verbs: ["get", "list"]
+---
+# RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  name: ax-traffic-rolebinding
+  namespace: ax-traffic
+  labels:
+    app.kubernetes.io/name: ax-traffic-analyzer
+    app.kubernetes.io/component: rbac
+subjects:
+  - kind: ServiceAccount
+    name: ax-traffic-sa
+    namespace: ax-traffic
+roleRef:
+  kind: Role
+  name: ax-traffic-role
+  apiGroup: rbac.authorization.k8s.io
+

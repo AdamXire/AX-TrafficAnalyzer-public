@@ -1,0 +1,11 @@
+# AX-TrafficAnalyzer Kubernetes Namespace
+# Copyright © 2025 MMeTech (Macau) Ltd.
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: ax-traffic
+  labels:
+    app.kubernetes.io/name: ax-traffic-analyzer
+    app.kubernetes.io/component: namespace
+    app.kubernetes.io/managed-by: kubectl
+

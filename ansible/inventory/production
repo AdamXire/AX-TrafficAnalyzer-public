@@ -1,0 +1,18 @@
+# AX-TrafficAnalyzer Production Inventory
+# Copyright © 2025 MMeTech (Macau) Ltd.
+#
+# Usage:
+#   ansible-playbook -i inventory/production playbook.yml
+
+[traffic_analyzers]
+# Add your production servers here
+# analyzer1.example.com ansible_host=192.168.1.100
+# analyzer2.example.com ansible_host=192.168.1.101
+
+[traffic_analyzers:vars]
+ansible_user=ubuntu
+ansible_python_interpreter=/usr/bin/python3
+wifi_interface=wlan0
+hotspot_enabled=true
+monitoring_enabled=true
+
