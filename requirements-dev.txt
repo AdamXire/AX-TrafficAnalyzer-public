@@ -1,0 +1,13 @@
+# AX-TrafficAnalyzer - Development Dependencies
+# Copyright © 2025 MMeTech (Macau) Ltd.
+#
+# Dependencies for testing and development
+# Install: pip install -r requirements-dev.txt
+
+-c requirements.txt
+
+# Testing framework
+pytest>=7.0.0
+pytest-cov>=4.0.0
+pytest-asyncio>=0.21.0,<1.0.0
+

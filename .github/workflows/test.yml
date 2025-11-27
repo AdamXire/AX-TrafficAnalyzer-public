@@ -46,9 +46,23 @@ jobs:
       - name: Install project dependencies
         if: steps.check_tests.outputs.tests_exist == 'true'
         run: |
+          echo "[DEBUG] Installing project dependencies..."
           if [ -f "requirements.txt" ]; then
+            echo "[DEBUG] Installing core requirements..."
             pip install -r requirements.txt
           fi
+          if [ -f "requirements-dev.txt" ]; then
+            echo "[DEBUG] Installing dev requirements..."
+            pip install -r requirements-dev.txt
+          fi
+          # Install capture deps with system requirements (optional)
+          if [ -f "requirements-capture.txt" ]; then
+            echo "[DEBUG] Installing capture requirements (with system deps)..."
+            sudo apt-get update
+            sudo apt-get install -y gcc libpcap-dev
+            pip install -r requirements-capture.txt
+          fi
+          echo "[DEBUG] Dependencies installed successfully"
       
       - name: Run tests
         if: steps.check_tests.outputs.tests_exist == 'true'
