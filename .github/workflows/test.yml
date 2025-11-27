@@ -14,7 +14,7 @@ jobs:
     
     strategy:
       matrix:
-        python-version: ['3.11', '3.12']
+        python-version: ['3.10']
     
     steps:
       - name: Checkout code
@@ -78,7 +78,7 @@ jobs:
           fi
       
       - name: Upload coverage reports
-        if: steps.check_tests.outputs.tests_exist == 'true' && matrix.python-version == '3.11'
+        if: steps.check_tests.outputs.tests_exist == 'true' && matrix.python-version == '3.10'
         uses: codecov/codecov-action@v3
         with:
           file: ./coverage.xml
